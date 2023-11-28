@@ -1,4 +1,4 @@
-# The script for the initial configuration of the Ubuntu/Debian server
+# The script for the initial configuration of the Ubuntu/Debian/CentOS server
 
 Script Features:
 1) System update
