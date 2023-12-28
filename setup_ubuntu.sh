@@ -30,7 +30,7 @@ if (( $(echo "$os_version >= 22.10" | bc -l) )); then
     systemctl daemon-reload
     systemctl restart ssh.socket
 else
-    read -p "Введите новый порт SSH для Ubuntu ниже 23.04: " sshport
+    read -p "Введите новый порт SSH для Ubuntu ниже 22.10: " sshport
     sed -i "s/#Port 22/Port $sshport/" /etc/ssh/sshd_config
     systemctl restart ssh
 fi
