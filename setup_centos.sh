@@ -1,17 +1,21 @@
 #!/bin/bash
 
-# Обновление системы
+# 1) Обновление системы
 yum update -y
 
-# Установка UFW
-yum install -y ufw
+# 2) Установка и включение Firewalld (аналог UFW в CentOS)
+yum install firewalld -y
+systemctl start firewalld
+systemctl enable firewalld
 
-# 1. Создание нового пользователя и добавление в группу wheel
+# 3) Создание нового пользователя и добавление его в группу sudo (wheel)
 read -p "Введите имя нового пользователя: " new_user
 adduser $new_user
+echo "Введите пароль для нового пользователя:"
+passwd $new_user
 usermod -aG wheel $new_user
 
-# 2. Генерация ключей и авторизация по ключам
+# 4) Генерация ключей SSH для нового пользователя и настройка авторизации по ключам
 mkdir -p /home/$new_user/.ssh
 chmod 700 /home/$new_user/.ssh
 ssh-keygen -t rsa -b 2048 -f /home/$new_user/.ssh/id_rsa -N ""
@@ -19,23 +23,23 @@ cat /home/$new_user/.ssh/id_rsa.pub >> /home/$new_user/.ssh/authorized_keys
 chmod 600 /home/$new_user/.ssh/authorized_keys
 chown -R $new_user:$new_user /home/$new_user/.ssh
 
-# 3. Изменение порта SSH и настройка безопасности
-read -p "Введите новый порт для SSH: " new_ssh_port
-sed -i "s/^#Port 22/Port $new_ssh_port/" /etc/ssh/sshd_config
-echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
-echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+# 5) Изменение порта SSH, настройка безопасности и запрет аутентификации по паролю
+read -p "Введите новый порт SSH: " sshport
+sed -i "s/#Port 22/Port $sshport/" /etc/ssh/sshd_config
+sed -i '/^PasswordAuthentication/ c\PasswordAuthentication no' /etc/ssh/sshd_config
+sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
 
-# 4. Добавление нового порта в файерволл UFW
-ufw allow $new_ssh_port
-ufw enable
+# 6) Добавление нового порта в Firewalld и активация Firewalld
+firewall-cmd --permanent --add-port=$sshport/tcp
+firewall-cmd --reload
 
-# 5. Отключение учетной записи root
-sed -i 's|^root:x:.*:/bin/bash|root:x:0:0:root:/root:/sbin/nologin|' /etc/passwd
+# 7) Отключение учетной записи root
+sed -i 's|^root:x:.*:/bin/bash|root:x:0:0:root:/root:/usr/sbin/nologin|' /etc/passwd
 
-# Перезапуск сервиса SSH для применения изменений
+# 8) Перезапуск сервиса SSH для применения изменений
 systemctl restart sshd
 
-# Вывод приватного ключа
-echo "Ваш приватный ключ для подключения к серверу:"
+# 9) Вывод приватного ключа нового пользователя
+echo "Приватный ключ нового пользователя:"
 cat /home/$new_user/.ssh/id_rsa
 echo -e "\nНастройка завершена."
