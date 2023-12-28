@@ -23,8 +23,12 @@ chown -R $new_user:$new_user /home/$new_user/.ssh
 read -p "Введите новый порт SSH: " sshport
 sed -i "s/#Port 22/Port $sshport/" /etc/ssh/sshd_config
 
+# Раскомментирование и установка параметра PubkeyAuthentication
+sed -i '/^#PubkeyAuthentication yes/ c\PubkeyAuthentication yes' /etc/ssh/sshd_config
+
 # Активация изменений параметров PasswordAuthentication и PermitRootLogin
-sed -i '/^PasswordAuthentication/ c\PasswordAuthentication no' /etc/ssh/sshd_config
+sed -i '/^#PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
+sed -i '/^PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
 sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
 
 # Создание файла /etc/ssh/sshd_config.d/50-cloud-init.conf и добавление параметра PasswordAuthentication
