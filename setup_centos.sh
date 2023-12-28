@@ -26,8 +26,10 @@ chown -R $new_user:$new_user /home/$new_user/.ssh
 # 5) Изменение порта SSH, настройка безопасности и запрет аутентификации по паролю
 read -p "Введите новый порт SSH: " sshport
 sed -i "s/#Port 22/Port $sshport/" /etc/ssh/sshd_config
-sed -i '/^PasswordAuthentication/ c\PasswordAuthentication no' /etc/ssh/sshd_config
-sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
+sed -i '/^#PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
+sed -i '/^PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
+sed -i '/^#PermitRootLogin yes/ c\PermitRootLogin no' /etc/ssh/sshd_config
+sed -i '/^PermitRootLogin yes/ c\PermitRootLogin no' /etc/ssh/sshd_config
 
 # 6) Добавление нового порта в Firewalld и активация Firewalld
 firewall-cmd --permanent --add-port=$sshport/tcp
