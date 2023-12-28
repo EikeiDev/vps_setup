@@ -24,8 +24,8 @@ chown -R $new_user:$new_user /home/$new_user/.ssh
 
 # 6) Изменение порта SSH, настройка безопасности и настройки аутентификации
 os_version=$(lsb_release -sr)
-if (( $(echo "$os_version >= 23.04" | bc -l) )); then
-    read -p "Введите новый порт SSH для Ubuntu 23.04 и выше: " sshport
+if (( $(echo "$os_version >= 22.10" | bc -l) )); then
+    read -p "Введите новый порт SSH для Ubuntu 22.10 и выше: " sshport
     sed -i "s/ListenStream=.*/ListenStream=$sshport/" /lib/systemd/system/ssh.socket
     systemctl daemon-reload
     systemctl restart ssh.socket
