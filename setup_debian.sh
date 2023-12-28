@@ -29,7 +29,8 @@ sed -i '/^#PubkeyAuthentication yes/ c\PubkeyAuthentication yes' /etc/ssh/sshd_c
 # Активация изменений параметров PasswordAuthentication и PermitRootLogin
 sed -i '/^#PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
 sed -i '/^PasswordAuthentication yes/ c\PasswordAuthentication no' /etc/ssh/sshd_config
-sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
+sed -i '/^#PermitRootLogin yes/ c\PermitRootLogin no' /etc/ssh/sshd_config
+sed -i '/^PermitRootLogin yes/ c\PermitRootLogin no' /etc/ssh/sshd_config
 
 # Создание файла /etc/ssh/sshd_config.d/50-cloud-init.conf и добавление параметра PasswordAuthentication
 echo "PasswordAuthentication no" > /etc/ssh/sshd_config.d/50-cloud-init.conf
