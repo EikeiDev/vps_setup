@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # 1) Обновление системы
-apt update && apt full-upgrade -y && apt autoremove -y
+apt-get update && apt full-upgrade -y && apt autoremove -y
 
 # 2) Установка UFW (Uncomplicated Firewall) и bc
-apt install ufw bc -y
+apt-get install ufw bc -y
 
 # 3) Создание нового пользователя и добавление его в группу sudo
 read -p "Введите имя нового пользователя: " new_user
